@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UCP Plugin</title>
+    <link rel="stylesheet" href="ucp-plugin.css">
+</head>
+<body>
+    <div id="ucp-plugin-container">
+        <button id="ucp-popup-btn" class="ucp-popup-btn">
+            Open UCP
+        </button>
+        
+        <div id="ucp-popup-container" class="ucp-popup-container ucp-hidden">
+            <div class="ucp-popup-header">
+                <span class="ucp-title">UCP - VoiceMeetMe</span>
+                <div class="ucp-controls">
+                    <button id="ucp-minimize-btn" class="ucp-minimize-btn" title="Minimize">−</button>
+                    <button id="ucp-close-btn" class="ucp-close-btn" title="Close">×</button>
+                </div>
+            </div>
+            <iframe
+                id="ucp-iframe"
+                src="https://ucdemo.voicemeetme.com/ucp/login"
+                title="UCP Embedded"
+                class="ucp-iframe"
+                allow="microphone; camera; autoplay; fullscreen; clipboard-write"
+                sandbox="allow-same-origin allow-scripts allow-forms allow-popups allow-modals"
+            ></iframe>
+        </div>
+    </div>
+    
+    <script src="ucp-plugin.js"></script>
+</body>
+</html>

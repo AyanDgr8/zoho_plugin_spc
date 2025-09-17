@@ -1,0 +1,52 @@
+{
+  "manifest_version": 3,
+  "name": "Zoho UCP Integration",
+  "version": "1.0",
+  "description": "Integrates UCP (Unified Communications Platform) into web applications with draggable interface and call handling.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "notifications"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.zoho.com/*",
+        "*://*.zoho.eu/*",
+        "*://*.zoho.in/*",
+        "*://*.crm.zoho.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["ucp-plugin.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "ucp-plugin.html",
+    "default_icon": "icon.png",
+    "default_title": "UCP Integration"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "icon.png",
+        "ucp-plugin.html",
+        "ucp-plugin.css",
+        "ucp-plugin.js"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "host_permissions": [
+    "*://*.voicemeetme.com/*",
+    "*://*.ucdemo.voicemeetme.com/*",
+    "*://*.zoho.com/*",
+    "*://*.zoho.eu/*",
+    "*://*.zoho.in/*",
+    "*://*.crm.zoho.com/*"
+  ]
+}

@@ -1,0 +1,159 @@
+/* UCP Plugin Styles */
+#ucp-plugin-container {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    z-index: 999999;
+}
+
+.ucp-popup-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 999998;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.ucp-popup-btn:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 123, 255, 0.4);
+}
+
+.ucp-popup-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 600px;
+    border: 1px solid #e0e0e0;
+    background-color: white;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    border-radius: 12px;
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    resize: both;
+    min-width: 300px;
+    min-height: 400px;
+    max-width: 90vw;
+    max-height: 90vh;
+}
+
+.ucp-hidden {
+    display: none !important;
+}
+
+.ucp-popup-header {
+    padding: 12px 16px;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border-bottom: 1px solid #dee2e6;
+    cursor: move;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+}
+
+.ucp-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #495057;
+}
+
+.ucp-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.ucp-minimize-btn, .ucp-close-btn {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: none;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.ucp-minimize-btn {
+    background: #ffc107;
+    color: #856404;
+}
+
+.ucp-minimize-btn:hover {
+    background: #e0a800;
+}
+
+.ucp-close-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.ucp-close-btn:hover {
+    background: #c82333;
+}
+
+.ucp-iframe {
+    flex-grow: 1;
+    border: none;
+    width: 100%;
+    height: 100%;
+    background: white;
+}
+
+/* Dragging state */
+.ucp-dragging {
+    cursor: move !important;
+}
+
+.ucp-dragging * {
+    pointer-events: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .ucp-popup-container {
+        width: 95vw;
+        height: 80vh;
+        top: 10vh;
+        left: 2.5vw;
+        transform: none;
+    }
+    
+    .ucp-popup-btn {
+        bottom: 10px;
+        right: 10px;
+        padding: 10px 16px;
+        font-size: 12px;
+    }
+}
+
+/* Animation for smooth transitions */
+.ucp-popup-container:not(.ucp-hidden) {
+    animation: ucpFadeIn 0.3s ease-out;
+}
+
+@keyframes ucpFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
