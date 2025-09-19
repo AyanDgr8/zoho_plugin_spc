@@ -62,6 +62,33 @@
     justify-content: space-between;
     align-items: center;
     user-select: none;
+    /* Prevent text selection during drag */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    /* Ensure header is always draggable */
+    pointer-events: auto;
+}
+
+.ucp-popup-header:hover {
+    background: linear-gradient(135deg, #e9ecef, #dee2e6);
+}
+
+.ucp-popup-header::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 6px;
+    transform: translateX(-50%);
+    width: 30px;
+    height: 3px;
+    background: #adb5bd;
+    border-radius: 2px;
+    opacity: 0.5;
+}
+
+.ucp-popup-header:hover::before {
+    opacity: 0.8;
 }
 
 .ucp-title {
@@ -118,10 +145,22 @@
 /* Dragging state */
 .ucp-dragging {
     cursor: move !important;
+    /* Disable pointer events on children during drag to prevent interference */
 }
 
 .ucp-dragging * {
-    pointer-events: none;
+    pointer-events: none !important;
+}
+
+/* Re-enable pointer events for buttons during drag */
+.ucp-dragging .ucp-minimize-btn,
+.ucp-dragging .ucp-close-btn {
+    pointer-events: auto !important;
+}
+
+/* Ensure iframe doesn't interfere with dragging */
+.ucp-dragging .ucp-iframe {
+    pointer-events: none !important;
 }
 
 /* Responsive design */
@@ -142,8 +181,8 @@
     }
 }
 
-/* Animation for smooth transitions */
-.ucp-popup-container:not(.ucp-hidden) {
+/* Animation for smooth transitions - but not during dragging */
+.ucp-popup-container:not(.ucp-hidden):not(.ucp-dragging) {
     animation: ucpFadeIn 0.3s ease-out;
 }
 
@@ -156,4 +195,10 @@
         opacity: 1;
         transform: translate(-50%, -50%) scale(1);
     }
+}
+
+/* Ensure animations don't interfere with manual transforms */
+.ucp-popup-container.ucp-dragging {
+    animation: none !important;
+    transition: none !important;
 }
