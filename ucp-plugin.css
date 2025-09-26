@@ -163,6 +163,15 @@
     pointer-events: none !important;
 }
 
+/* Ensure interactive elements are always clickable when not dragging */
+.ucp-popup-container:not(.ucp-dragging) .ucp-iframe,
+.ucp-popup-container:not(.ucp-dragging) button,
+.ucp-popup-container:not(.ucp-dragging) input,
+.ucp-popup-container:not(.ucp-dragging) select,
+.ucp-popup-container:not(.ucp-dragging) textarea {
+    pointer-events: auto !important;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
     .ucp-popup-container {

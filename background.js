@@ -6,7 +6,7 @@ chrome.runtime.onInstalled.addListener(() => {
     chrome.storage.sync.set({
         ucpEnabled: true,
         autoOpen: false,
-        ucpUrl: 'https://ucdemo.voicemeetme.com/ucp/login'
+        ucpUrl: 'https://ira-spc-sj.ucprem.voicemeetme.com/ucp/login'
     });
 });
 

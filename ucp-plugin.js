@@ -5,7 +5,7 @@ class UCPPlugin {
         this.position = { x: 0, y: 0 };
         this.isDragging = false;
         this.startPos = { x: 0, y: 0 };
-        this.ucpUrl = 'https://ucdemo.voicemeetme.com//ucp/login';
+        this.ucpUrl = 'https://ira-spc-sj.ucprem.voicemeetme.com/ucp/login';
         this.isInitialized = false;
         
         this.init();
@@ -78,6 +78,20 @@ class UCPPlugin {
         // Global mouse events for dragging - use capture phase for better reliability
         document.addEventListener('mousemove', (e) => this.handleMouseMove(e), true);
         document.addEventListener('mouseup', () => this.handleMouseUp(), true);
+        
+        // Add escape key handler to reset stuck states
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.isDragging) {
+                this.forceResetDragState();
+            }
+        });
+        
+        // Add double-click handler to reset plugin state
+        if (header) {
+            header.addEventListener('dblclick', () => {
+                this.resetPluginState();
+            });
+        }
 
         // Prevent dragging when interacting with iframe or buttons
         const iframe = document.getElementById('ucp-iframe');
@@ -91,6 +105,11 @@ class UCPPlugin {
         if (popupContainer) {
             popupContainer.style.pointerEvents = 'auto';
         }
+        
+        // Initial call to ensure all elements are interactive
+        setTimeout(() => {
+            this.ensurePointerEventsEnabled();
+        }, 100);
     }
 
     setupMessageListener() {
@@ -164,6 +183,14 @@ class UCPPlugin {
         popupContainer.classList.add('ucp-dragging');
         popupContainer.style.transition = 'none';
         
+        // Set a timeout to automatically reset dragging state if it gets stuck
+        this.dragTimeout = setTimeout(() => {
+            if (this.isDragging) {
+                console.warn('UCP Plugin: Drag state timeout, resetting...');
+                this.forceResetDragState();
+            }
+        }, 5000); // 5 second timeout
+        
         e.preventDefault();
         e.stopPropagation();
     }
@@ -200,12 +227,20 @@ class UCPPlugin {
         
         this.isDragging = false;
         
+        // Clear drag timeout
+        if (this.dragTimeout) {
+            clearTimeout(this.dragTimeout);
+            this.dragTimeout = null;
+        }
+        
         const popupContainer = document.getElementById('ucp-popup-container');
         if (popupContainer) {
             popupContainer.classList.remove('ucp-dragging');
             // Re-enable transitions after a short delay
             setTimeout(() => {
                 popupContainer.style.transition = '';
+                // Force re-enable pointer events for all children
+                this.ensurePointerEventsEnabled();
             }, 50);
         }
         
@@ -408,6 +443,57 @@ class UCPPlugin {
             this.openPopup();
         }
     }
+
+    // Force reset drag state if it gets stuck
+    forceResetDragState() {
+        this.isDragging = false;
+        
+        if (this.dragTimeout) {
+            clearTimeout(this.dragTimeout);
+            this.dragTimeout = null;
+        }
+        
+        const popupContainer = document.getElementById('ucp-popup-container');
+        if (popupContainer) {
+            popupContainer.classList.remove('ucp-dragging');
+            popupContainer.style.transition = '';
+            this.ensurePointerEventsEnabled();
+        }
+    }
+    
+    // Ensure all interactive elements have proper pointer events
+    ensurePointerEventsEnabled() {
+        const popupContainer = document.getElementById('ucp-popup-container');
+        if (!popupContainer) return;
+        
+        // Re-enable pointer events for the container and all interactive elements
+        popupContainer.style.pointerEvents = 'auto';
+        
+        const interactiveElements = popupContainer.querySelectorAll('iframe, button, input, select, textarea, [onclick], [onmousedown], [onmouseup]');
+        interactiveElements.forEach(el => {
+            el.style.pointerEvents = 'auto';
+        });
+        
+        // Specifically ensure iframe is interactive
+        const iframe = document.getElementById('ucp-iframe');
+        if (iframe) {
+            iframe.style.pointerEvents = 'auto';
+        }
+    }
+    
+    // Add method to manually reset plugin state
+    resetPluginState() {
+        console.log('UCP Plugin: Manually resetting plugin state...');
+        this.forceResetDragState();
+        this.ensurePointerEventsEnabled();
+        
+        // Reset any stuck states
+        const popupContainer = document.getElementById('ucp-popup-container');
+        if (popupContainer) {
+            popupContainer.style.transform = popupContainer.style.transform || 'translate(-50%, -50%)';
+            popupContainer.style.zIndex = '999999';
+        }
+    }
 }
 
 // Initialize the plugin when DOM is ready with better timing
@@ -434,6 +520,16 @@ if (document.readyState === 'loading') {
 if ('Notification' in window && Notification.permission === 'default') {
     Notification.requestPermission();
 }
+
+// Global function to reset plugin state (for debugging/emergency use)
+window.resetUCPPlugin = function() {
+    if (window.ucpPlugin) {
+        window.ucpPlugin.resetPluginState();
+        console.log('UCP Plugin state has been reset. Try interacting with the plugin now.');
+    } else {
+        console.warn('UCP Plugin not found. Make sure the plugin is loaded.');
+    }
+};
 
 // Export for use in other scripts
 if (typeof module !== 'undefined' && module.exports) {

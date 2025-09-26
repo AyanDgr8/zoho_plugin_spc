@@ -44,6 +44,7 @@
   "host_permissions": [
     "*://*.voicemeetme.com/*",
     "*://*.ucdemo.voicemeetme.com/*",
+    "*://*.ira-spc-sj.ucprem.voicemeetme.com/*",
     "*://*.zoho.com/*",
     "*://*.zoho.eu/*",
     "*://*.zoho.in/*",
