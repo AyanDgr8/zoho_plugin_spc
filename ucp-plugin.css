@@ -142,25 +142,36 @@
     background: white;
 }
 
-/* Dragging state */
+/* Dragging state - More selective pointer event disabling */
 .ucp-dragging {
     cursor: move !important;
-    /* Disable pointer events on children during drag to prevent interference */
 }
 
-.ucp-dragging * {
+/* Only disable pointer events on specific elements that interfere with dragging */
+.ucp-dragging .ucp-iframe {
     pointer-events: none !important;
 }
 
-/* Re-enable pointer events for buttons during drag */
+/* Disable text selection during drag */
+.ucp-dragging * {
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+}
+
+/* Always keep buttons interactive */
+.ucp-minimize-btn,
+.ucp-close-btn {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+/* Ensure buttons work even during drag */
 .ucp-dragging .ucp-minimize-btn,
 .ucp-dragging .ucp-close-btn {
     pointer-events: auto !important;
-}
-
-/* Ensure iframe doesn't interfere with dragging */
-.ucp-dragging .ucp-iframe {
-    pointer-events: none !important;
+    cursor: pointer !important;
 }
 
 /* Ensure interactive elements are always clickable when not dragging */
@@ -168,8 +179,57 @@
 .ucp-popup-container:not(.ucp-dragging) button,
 .ucp-popup-container:not(.ucp-dragging) input,
 .ucp-popup-container:not(.ucp-dragging) select,
-.ucp-popup-container:not(.ucp-dragging) textarea {
+.ucp-popup-container:not(.ucp-dragging) textarea,
+.ucp-popup-container:not(.ucp-dragging) a,
+.ucp-popup-container:not(.ucp-dragging) [tabindex] {
     pointer-events: auto !important;
+    user-select: auto !important;
+}
+
+/* Force enable interactions for critical elements - More aggressive */
+.ucp-popup-container .ucp-iframe {
+    pointer-events: auto !important;
+    user-select: auto !important;
+    -webkit-user-select: auto !important;
+    -moz-user-select: auto !important;
+    -ms-user-select: auto !important;
+}
+
+.ucp-popup-container button {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+/* Ensure iframe is always interactive - highest priority */
+#ucp-iframe {
+    pointer-events: auto !important;
+    user-select: auto !important;
+    -webkit-user-select: auto !important;
+    -moz-user-select: auto !important;
+    -ms-user-select: auto !important;
+    z-index: 1 !important;
+}
+
+/* Force iframe interactions even when parent has restrictions */
+.ucp-popup-container:not(.ucp-dragging) #ucp-iframe {
+    pointer-events: auto !important;
+    user-select: auto !important;
+}
+
+/* Emergency iframe restoration */
+.ucp-iframe-force-interactive {
+    pointer-events: auto !important;
+    user-select: auto !important;
+    -webkit-user-select: auto !important;
+    -moz-user-select: auto !important;
+    -ms-user-select: auto !important;
+    z-index: 1 !important;
+}
+
+/* Recovery state indicator */
+.ucp-popup-container.ucp-recovering {
+    border: 2px solid #28a745;
+    box-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
 }
 
 /* Responsive design */
@@ -210,4 +270,133 @@
 .ucp-popup-container.ucp-dragging {
     animation: none !important;
     transition: none !important;
+}
+
+/* Emergency reset styles - highest priority */
+.ucp-popup-container.ucp-force-interactive,
+.ucp-popup-container.ucp-force-interactive * {
+    pointer-events: auto !important;
+    user-select: auto !important;
+}
+
+.ucp-popup-container.ucp-force-interactive .ucp-iframe {
+    pointer-events: auto !important;
+}
+
+.ucp-popup-container.ucp-force-interactive button {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+}
+
+.ucp-popup-container.ucp-force-interactive .ucp-iframe {
+    pointer-events: auto !important;
+    user-select: auto !important;
+    -webkit-user-select: auto !important;
+    -moz-user-select: auto !important;
+    -ms-user-select: auto !important;
+}
+
+/* Additional safety net for iframe interactions */
+.ucp-iframe-emergency-reset {
+    pointer-events: auto !important;
+    user-select: auto !important;
+    -webkit-user-select: auto !important;
+    -moz-user-select: auto !important;
+    -ms-user-select: auto !important;
+    z-index: 999 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Enhanced iframe interaction and hover effects */
+.ucp-iframe {
+    transition: all 0.2s ease;
+    cursor: auto;
+    border-radius: 0 0 12px 12px;
+}
+
+.ucp-iframe:hover {
+    box-shadow: inset 0 0 0 1px rgba(0, 123, 255, 0.2);
+}
+
+/* Improve iframe responsiveness */
+.ucp-iframe {
+    will-change: contents;
+    contain: layout;
+    transform: translateZ(0); /* Force hardware acceleration */
+    -webkit-transform: translateZ(0);
+}
+
+/* Enhanced hover effects for the entire popup */
+.ucp-popup-container:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease;
+}
+
+/* Smooth cursor transitions */
+.ucp-popup-container * {
+    cursor: inherit;
+    transition: cursor 0.1s ease;
+}
+
+/* Enhanced button hover effects */
+.ucp-minimize-btn:hover,
+.ucp-close-btn:hover {
+    transform: scale(1.1);
+    transition: all 0.2s ease;
+}
+
+.ucp-popup-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(0, 123, 255, 0.5);
+}
+
+/* Interactive feedback for iframe content */
+.ucp-popup-container:not(.ucp-dragging) .ucp-iframe {
+    cursor: auto;
+    transition: filter 0.2s ease;
+}
+
+.ucp-popup-container:not(.ucp-dragging) .ucp-iframe:hover {
+    filter: brightness(1.02) contrast(1.01);
+}
+
+/* Smooth resize handle */
+.ucp-popup-container::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(-45deg, transparent 30%, #dee2e6 30%, #dee2e6 40%, transparent 40%, transparent 60%, #dee2e6 60%, #dee2e6 70%, transparent 70%);
+    cursor: nw-resize;
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+.ucp-popup-container:hover::after {
+    opacity: 0.8;
+}
+
+/* Enhanced focus states for accessibility */
+.ucp-popup-container:focus-within {
+    outline: 2px solid rgba(0, 123, 255, 0.5);
+    outline-offset: 2px;
+}
+
+/* Smooth loading state */
+.ucp-iframe-loading {
+    background: linear-gradient(90deg, #f8f9fa 25%, #e9ecef 50%, #f8f9fa 75%);
+    background-size: 200% 100%;
+    animation: ucpLoading 1.5s infinite;
+}
+
+@keyframes ucpLoading {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
 }
